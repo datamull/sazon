@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sazon/state/app_state.dart';
 import 'package:sazon/models/recipe.dart';
 import 'package:sazon/services/shopping_plan.dart';
 import 'package:sazon/utils/naming.dart';
@@ -88,5 +90,55 @@ void main() {
     });
     expect(r.ingredients.single.substitute!.fr, 'maïs surgelé');
     expect(r.steps.single.action, 'blend');
+  });
+
+  group('perfil alimenticio', () {
+    Recipe vegan() => Recipe.fromJson({
+          'url': 'https://www.recetasnestle.cl/recetas/pastel-de-choclo',
+          'source': 'Recetas Nestlé Chile',
+          'title': 'Pastel de choclo',
+          'summary': '',
+          'aiUsed': true,
+          'diet': ['gluten', 'vegan'],
+          'dietAdapted': true,
+          'dietOk': false,
+          'dietNotes': ['Revisa que el caldo diga sin gluten.'],
+          'ingredients': [
+            {'name': 'carne molida', 'fr': 'bœuf haché', 'shopFr': 'boeuf haché', 'pantry': false, 'availability': 'common',
+              'conflicts': ['vegan'], 'subReason': 'diet',
+              'substitute': {'name': 'lentejas cocidas', 'why': 'textura parecida', 'fr': 'lentilles cuites', 'shopFr': 'lentilles'}},
+            {'name': 'cebolla', 'fr': 'oignon', 'shopFr': 'oignon', 'pantry': false, 'availability': 'common', 'conflicts': []},
+            {'name': 'miel', 'fr': 'miel', 'shopFr': 'miel', 'pantry': false, 'availability': 'common', 'conflicts': ['vegan']},
+          ],
+          'steps': [{'text': 'Cocinar', 'action': 'boil'}],
+        });
+
+    test('lee régimen, conflictos y consejos', () {
+      final r = vegan();
+      expect(r.diet, ['gluten', 'vegan']);
+      expect(r.dietAdapted, isTrue);
+      expect(r.dietNotes.single, contains('sin gluten'));
+      expect(r.ingredients.first.conflicts, ['vegan']);
+      expect(r.ingredients.first.subReason, 'diet');
+    });
+
+    test('el sustituto que cumple el régimen viene activado y entra a la compra', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final s = RecipeSession(vegan(), prefs, 'gluten,vegan');
+      expect(s.useSub, {0});
+      expect(s.effective(0).name, 'lentejas cocidas');
+      expect(s.buyItems().first.query, 'lentilles');
+      // sin sustituto (miel): se mantiene el original
+      expect(s.effective(2).sub, isFalse);
+    });
+
+    test('lo elegido se guarda por régimen', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      RecipeSession(vegan(), prefs, 'gluten,vegan').toggleSub(0); // vuelve al original
+      expect(RecipeSession(vegan(), prefs, 'gluten,vegan').useSub, isEmpty);
+      expect(RecipeSession(vegan(), prefs, 'vegan').useSub, {0}); // otro régimen: valores por defecto
+    });
   });
 }

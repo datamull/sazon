@@ -3,7 +3,19 @@ import 'package:flutter/material.dart';
 /// Paleta "recetario de mercado": papel verdoso, verde cilantro, amarillo choclo, rojo ají.
 @immutable
 class SazonColors extends ThemeExtension<SazonColors> {
-  final Color bg, surface, sunk, line, ink, muted, accent, accentInk, accentSoft, chile, chileSoft, maize, maizeSoft;
+  final Color bg,
+      surface,
+      sunk,
+      line,
+      ink,
+      muted,
+      accent,
+      accentInk,
+      accentSoft,
+      chile,
+      chileSoft,
+      maize,
+      maizeSoft;
   const SazonColors({
     required this.bg,
     required this.surface,
@@ -56,7 +68,8 @@ class SazonColors extends ThemeExtension<SazonColors> {
   SazonColors copyWith() => this;
 
   @override
-  SazonColors lerp(ThemeExtension<SazonColors>? other, double t) => t < 0.5 ? this : (other as SazonColors? ?? this);
+  SazonColors lerp(ThemeExtension<SazonColors>? other, double t) =>
+      t < 0.5 ? this : (other as SazonColors? ?? this);
 }
 
 extension SazonContext on BuildContext {
@@ -66,24 +79,29 @@ extension SazonContext on BuildContext {
 const display = 'Bricolage';
 const body = 'Figtree';
 
-TextStyle displayStyle(double size, Color color, {FontWeight weight = FontWeight.w800}) => TextStyle(
-      fontFamily: display,
-      fontSize: size,
-      height: 1.08,
-      letterSpacing: -0.4,
-      color: color,
-      fontWeight: weight,
-      fontVariations: [FontVariation.weight(weight.value.toDouble())],
-    );
+TextStyle displayStyle(
+  double size,
+  Color color, {
+  FontWeight weight = FontWeight.w800,
+}) => TextStyle(
+  fontFamily: display,
+  fontSize: size,
+  height: 1.08,
+  letterSpacing: -0.4,
+  color: color,
+  fontWeight: weight,
+  fontVariations: [FontVariation.weight(weight.value.toDouble())],
+);
 
 ThemeData buildTheme(SazonColors c, Brightness b) {
-  final scheme = ColorScheme.fromSeed(seedColor: c.accent, brightness: b).copyWith(
-    primary: c.accent,
-    onPrimary: c.accentInk,
-    surface: c.bg,
-    onSurface: c.ink,
-    error: c.chile,
-  );
+  final scheme = ColorScheme.fromSeed(seedColor: c.accent, brightness: b)
+      .copyWith(
+        primary: c.accent,
+        onPrimary: c.accentInk,
+        surface: c.bg,
+        onSurface: c.ink,
+        error: c.chile,
+      );
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
@@ -105,7 +123,11 @@ ThemeData buildTheme(SazonColors c, Brightness b) {
         foregroundColor: c.accentInk,
         minimumSize: const Size(48, 52),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontFamily: body, fontWeight: FontWeight.w700, fontSize: 16),
+        textStyle: const TextStyle(
+          fontFamily: body,
+          fontWeight: FontWeight.w700,
+          fontSize: 16,
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -115,28 +137,47 @@ ThemeData buildTheme(SazonColors c, Brightness b) {
         side: BorderSide(color: c.line, width: 1.5),
         minimumSize: const Size(48, 52),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontFamily: body, fontWeight: FontWeight.w700, fontSize: 16),
+        textStyle: const TextStyle(
+          fontFamily: body,
+          fontWeight: FontWeight.w700,
+          fontSize: 16,
+        ),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: c.accent,
-        textStyle: const TextStyle(fontFamily: body, fontWeight: FontWeight.w700, decoration: TextDecoration.underline),
+        textStyle: const TextStyle(
+          fontFamily: body,
+          fontWeight: FontWeight.w700,
+          decoration: TextDecoration.underline,
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: c.surface,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.line, width: 1.5)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.line, width: 1.5)),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.accent, width: 2)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: c.line, width: 1.5),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: c.line, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: c.accent, width: 2),
+      ),
       hintStyle: TextStyle(color: c.muted),
     ),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
       side: BorderSide(color: c.line, width: 2),
-      fillColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? c.accent : c.surface),
+      fillColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected) ? c.accent : c.surface,
+      ),
       checkColor: WidgetStatePropertyAll(c.accentInk),
     ),
   );

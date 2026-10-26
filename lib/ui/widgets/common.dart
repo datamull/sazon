@@ -7,7 +7,10 @@ import '../screens/settings_sheet.dart';
 import '../theme.dart';
 
 /// Barra superior con la marca y el botón de ajustes.
-PreferredSizeWidget sazonBar(BuildContext context, {List<Widget> actions = const []}) {
+PreferredSizeWidget sazonBar(
+  BuildContext context, {
+  List<Widget> actions = const [],
+}) {
   final c = context.c;
   return AppBar(
     titleSpacing: 0,
@@ -17,8 +20,15 @@ PreferredSizeWidget sazonBar(BuildContext context, {List<Widget> actions = const
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(color: c.accent, borderRadius: BorderRadius.circular(10)),
-          child: Icon(Icons.soup_kitchen_outlined, size: 20, color: c.accentInk),
+          decoration: BoxDecoration(
+            color: c.accent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            Icons.soup_kitchen_outlined,
+            size: 20,
+            color: c.accentInk,
+          ),
         ),
         const SizedBox(width: 8),
         Text('Sazón', style: displayStyle(22, c.ink)),
@@ -41,9 +51,14 @@ class Eyebrow extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) => Text(
-        text.toUpperCase(),
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1.1, color: context.c.muted),
-      );
+    text.toUpperCase(),
+    style: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1.1,
+      color: context.c.muted,
+    ),
+  );
 }
 
 class SectionTitle extends StatelessWidget {
@@ -61,8 +76,14 @@ class SectionTitle extends StatelessWidget {
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(color: c.sunk, borderRadius: BorderRadius.circular(13)),
-            child: Text('$count', style: TextStyle(fontWeight: FontWeight.w600, color: c.ink)),
+            decoration: BoxDecoration(
+              color: c.sunk,
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: Text(
+              '$count',
+              style: TextStyle(fontWeight: FontWeight.w600, color: c.ink),
+            ),
           ),
         ],
       ],
@@ -79,13 +100,18 @@ class Note extends StatelessWidget {
     final c = context.c;
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: warn ? c.maizeSoft : c.accentSoft, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: warn ? c.maizeSoft : c.accentSoft,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.info_outline, size: 20, color: c.ink),
           const SizedBox(width: 10),
-          Expanded(child: Text(text, style: TextStyle(fontSize: 14, color: c.ink))),
+          Expanded(
+            child: Text(text, style: TextStyle(fontSize: 14, color: c.ink)),
+          ),
         ],
       ),
     );
@@ -101,13 +127,19 @@ class ErrorBox extends StatelessWidget {
     final c = context.c;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: c.chileSoft, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(
+        color: c.chileSoft,
+        borderRadius: BorderRadius.circular(14),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(message, style: TextStyle(color: c.ink)),
           const SizedBox(height: 10),
-          OutlinedButton(onPressed: onRetry, child: Text(AppScope.of(context).t('retry'))),
+          OutlinedButton(
+            onPressed: onRetry,
+            child: Text(AppScope.of(context).t('retry')),
+          ),
         ],
       ),
     );
@@ -124,7 +156,10 @@ class StepArt extends StatefulWidget {
 }
 
 class _StepArtState extends State<StepArt> with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1600),
+  );
 
   @override
   void initState() {
@@ -165,17 +200,27 @@ class Loading extends StatelessWidget {
   final String message;
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Column(
-          children: [
-            const SizedBox(width: 180, height: 120, child: StepArt('boil')),
-            const SizedBox(height: 8),
-            Text(message, textAlign: TextAlign.center, style: TextStyle(color: context.c.muted)),
-            const SizedBox(height: 12),
-            SizedBox(width: 120, child: LinearProgressIndicator(color: context.c.accent, backgroundColor: context.c.sunk)),
-          ],
+    padding: const EdgeInsets.symmetric(vertical: 24),
+    child: Column(
+      children: [
+        const SizedBox(width: 180, height: 120, child: StepArt('boil')),
+        const SizedBox(height: 8),
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: context.c.muted),
         ),
-      );
+        const SizedBox(height: 12),
+        SizedBox(
+          width: 120,
+          child: LinearProgressIndicator(
+            color: context.c.accent,
+            backgroundColor: context.c.sunk,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 /// Botón principal anclado abajo.
@@ -186,12 +231,19 @@ class Dock extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.c;
     return Container(
-      decoration: BoxDecoration(color: c.bg, border: Border(top: BorderSide(color: c.line))),
+      decoration: BoxDecoration(
+        color: c.bg,
+        border: Border(top: BorderSide(color: c.line)),
+      ),
       child: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
+          ),
         ),
       ),
     );
@@ -200,6 +252,10 @@ class Dock extends StatelessWidget {
 
 String friendlyError(AppState app, Object e) {
   final msg = e.toString();
-  if (msg.contains('TimeoutException') || msg.contains('SocketException') || msg.contains('ClientException')) return app.t('error');
+  if (msg.contains('TimeoutException') ||
+      msg.contains('SocketException') ||
+      msg.contains('ClientException')) {
+    return app.t('error');
+  }
   return msg;
 }

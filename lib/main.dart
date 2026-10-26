@@ -9,7 +9,11 @@ import 'ui/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Future.wait([initializeDateFormatting('es'), initializeDateFormatting('fr'), initializeDateFormatting('en')]);
+  await Future.wait([
+    initializeDateFormatting('es'),
+    initializeDateFormatting('fr'),
+    initializeDateFormatting('en'),
+  ]);
   final prefs = await SharedPreferences.getInstance();
   runApp(SazonApp(state: AppState(prefs)));
 }
