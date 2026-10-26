@@ -1,0 +1,18 @@
+{
+  "name": "sazon-sitio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sazón: recetas de Quebec, Chile, México y Colombia desde sus fuentes, con perfil alimenticio, sustitutos por país, plan de compras y preparación paso a paso.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "tsx scripts/dev.ts",
+    "check": "tsc --noEmit",
+    "test:sources": "tsx scripts/check-popular.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
