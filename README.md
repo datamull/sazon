@@ -2,7 +2,7 @@
 
 App Flutter de Sazón: recetas de Quebec, Chile, México y Colombia traídas en vivo de sus sitios, con nombres en francés para comprar en Quebec, plan de compra con precios, checklist y preparación paso a paso.
 
-Usa como servidor las funciones de Netlify de la web (`https://sazon-cocina.netlify.app`). La clave de Gemini vive solo en Netlify, nunca en la app.
+Usa como servidor las funciones de Vercel de la carpeta `sitio/` (`https://sazon-sitio.vercel.app`). La clave de Gemini vive solo en Vercel, nunca en la app.
 
 ## Estructura
 - `lib/models/recipe.dart` — datos que llegan de la API

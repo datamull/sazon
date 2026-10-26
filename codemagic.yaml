@@ -17,8 +17,8 @@ workflows:
         bundle_identifier: com.sebamuller.sazon
       vars:
         BUNDLE_ID: "com.sebamuller.sazon"
-        # Servidor de la app (funciones de Netlify)
-        API_BASE: "https://sazon-cocina.netlify.app"
+        # Servidor de la app (funciones de Vercel, carpeta sitio/)
+        API_BASE: "https://sazon-sitio.vercel.app"
       flutter: stable
       xcode: latest
     scripts:

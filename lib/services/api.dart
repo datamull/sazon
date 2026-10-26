@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 
 import '../models/recipe.dart';
 
-/// Servidor de Sazón (funciones de Netlify). Se puede cambiar al compilar:
+/// Servidor de Sazón (funciones de Vercel, carpeta sitio/). Se puede cambiar al compilar:
 /// flutter build ipa --dart-define=API_BASE=https://otro-sitio.netlify.app
 const apiBase = String.fromEnvironment(
   'API_BASE',
-  defaultValue: 'https://sazon-cocina.netlify.app',
+  defaultValue: 'https://sazon-sitio.vercel.app',
 );
 
 class ApiException implements Exception {
