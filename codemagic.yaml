@@ -1,0 +1,53 @@
+workflows:
+  ios-release:
+    name: Sazón · iOS App Store
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      # La misma clave de App Store Connect que usa Plate Calc
+      # (Ajustes de la cuenta → Integrations → Developer Portal).
+      app_store_connect: "SebaHalt"
+    environment:
+      # Firma automática: Codemagic obtiene el certificado y el perfil de
+      # distribución con la clave de App Store Connect.
+      # El identificador debe existir antes en developer.apple.com (Identifiers)
+      # y la app en App Store Connect (ver README).
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.sebamuller.sazon
+      vars:
+        BUNDLE_ID: "com.sebamuller.sazon"
+        # Servidor de la app (funciones de Netlify)
+        API_BASE: "https://sazon-cocina.netlify.app"
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Instalar dependencias
+        script: flutter pub get
+
+      # Si el análisis o alguna prueba falla, la build se detiene y no se
+      # sube nada a TestFlight.
+      - name: Análisis estático
+        script: flutter analyze
+      - name: Pruebas
+        script: flutter test
+
+      - name: Firma de código
+        script: xcode-project use-profiles
+
+      # El número de build se toma de Codemagic ($BUILD_NUMBER) para que
+      # cada subida sea distinta; App Store rechaza números repetidos.
+      - name: Compilar IPA
+        script: |
+          flutter build ipa --release \
+            --build-number=$BUILD_NUMBER \
+            --dart-define=API_BASE=$API_BASE \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        # Las builds llegan a TestFlight para testers internos sin revisión.
+        submit_to_testflight: false

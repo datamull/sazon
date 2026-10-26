@@ -1,0 +1,36 @@
+name: sazon
+description: "Recetas de Quebec, Chile, México y Colombia con asistente de compras y preparación paso a paso."
+publish_to: 'none'
+
+# version: <nombre visible>+<número de build>
+# Codemagic reemplaza el número de build automáticamente (ver codemagic.yaml).
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+  flutter_svg: ^2.0.10
+  url_launcher: ^6.3.0
+  intl: any # versión fijada por flutter_localizations
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Bricolage
+      fonts:
+        - asset: assets/fonts/BricolageGrotesque.ttf
+    - family: Figtree
+      fonts:
+        - asset: assets/fonts/Figtree.ttf
