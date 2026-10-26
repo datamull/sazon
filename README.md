@@ -25,7 +25,7 @@ Una sola vez:
 1. **developer.apple.com → Identifiers → +** → App IDs → App → Bundle ID explícito `com.sebamuller.sazon` (descripción «Sazón»).
 2. **App Store Connect → Apps → + Nueva app** → iOS, nombre «Sazón» (o el que esté libre), idioma principal, Bundle ID `com.sebamuller.sazon`, SKU `sazon`.
 3. Sube este proyecto a un repositorio de GitHub.
-4. **Codemagic → Add application** → ese repositorio → tipo Flutter → usa `codemagic.yaml`. La integración `SebaHalt` es la misma clave que usa Plate Calc.
+4. **Codemagic → Add application** → ese repositorio → tipo Flutter → usa `codemagic.yaml`. La clave de App Store Connect en Codemagic se llama `Datamull`.
 
 Cada versión: sube los cambios y ejecuta el flujo **«Sazón · iOS App Store»**. La build llega a TestFlight; desde ahí la envías a revisión en App Store Connect.
 

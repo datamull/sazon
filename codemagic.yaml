@@ -4,9 +4,9 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      # La misma clave de App Store Connect que usa Plate Calc
+      # Clave de App Store Connect guardada en Codemagic (cuenta datamull)
       # (Ajustes de la cuenta → Integrations → Developer Portal).
-      app_store_connect: "SebaHalt"
+      app_store_connect: "Datamull"
     environment:
       # Firma automática: Codemagic obtiene el certificado y el perfil de
       # distribución con la clave de App Store Connect.
