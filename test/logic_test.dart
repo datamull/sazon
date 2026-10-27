@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sazon/state/app_state.dart';
+import 'package:sazon/ui/screens/splash_screen.dart';
 import 'package:sazon/models/recipe.dart';
 import 'package:sazon/services/shopping_plan.dart';
 import 'package:sazon/utils/naming.dart';
@@ -15,15 +16,36 @@ void main() {
     });
     test('plato: sin paréntesis si es el mismo nombre', () {
       expect(withParen(dishName('Poutine', 'Poutine')), 'Poutine');
-      expect(withParen(dishName('Ajiaco colombiano', 'Receta de Ajiaco Colombiano')), 'Ajiaco colombiano');
-      expect(withParen(dishName('Pastel de Choclo y Pollo (Pastel de Maíz y Pollo)', 'Pastel de Choclo y Pollo (Corn and Chicken Cake)')),
-          'Pastel de Choclo y Pollo (Corn and Chicken Cake)');
+      expect(
+        withParen(dishName('Ajiaco colombiano', 'Receta de Ajiaco Colombiano')),
+        'Ajiaco colombiano',
+      );
+      expect(
+        withParen(
+          dishName(
+            'Pastel de Choclo y Pollo (Pastel de Maíz y Pollo)',
+            'Pastel de Choclo y Pollo (Corn and Chicken Cake)',
+          ),
+        ),
+        'Pastel de Choclo y Pollo (Corn and Chicken Cake)',
+      );
     });
-    test('ingrediente: francés primero si vive en Quebec y la app no está en francés', () {
-      expect(withParen(ingredientName('cebollas', 'oignons jaunes', showFr: true)), 'oignons jaunes (cebollas)');
-      expect(withParen(ingredientName('cebollas', 'oignons jaunes', showFr: false)), 'cebollas');
-      expect(withParen(ingredientName('tofu', 'tofu', showFr: true)), 'tofu');
-    });
+    test(
+      'ingrediente: francés primero si vive en Quebec y la app no está en francés',
+      () {
+        expect(
+          withParen(ingredientName('cebollas', 'oignons jaunes', showFr: true)),
+          'oignons jaunes (cebollas)',
+        );
+        expect(
+          withParen(
+            ingredientName('cebollas', 'oignons jaunes', showFr: false),
+          ),
+          'cebollas',
+        );
+        expect(withParen(ingredientName('tofu', 'tofu', showFr: true)), 'tofu');
+      },
+    );
     test('cantidades con fracciones', () {
       expect(qtyFmt(1.5), '1 ½');
       expect(qtyFmt(0.25), '¼');
@@ -52,15 +74,18 @@ void main() {
       aiUsed: true,
     );
 
-    test('elige el súper más barato para la canasta y manda el resto al siguiente', () {
-      final p = buildPlan(prices, items);
-      expect(p.main, 'Maxi');
-      expect(p.stops.first.rows.map((r) => r.item.id), ['0']);
-      expect(p.stops[1].store, 'Super C');
-      expect(p.stops[1].rows.map((r) => r.item.id), ['1']);
-      expect(p.leftovers.single.$1.id, '2');
-      expect(p.total, closeTo(5.44 + 2.49 + 2.49, 0.001));
-    });
+    test(
+      'elige el súper más barato para la canasta y manda el resto al siguiente',
+      () {
+        final p = buildPlan(prices, items);
+        expect(p.main, 'Maxi');
+        expect(p.stops.first.rows.map((r) => r.item.id), ['0']);
+        expect(p.stops[1].store, 'Super C');
+        expect(p.stops[1].rows.map((r) => r.item.id), ['1']);
+        expect(p.leftovers.single.$1.id, '2');
+        expect(p.total, closeTo(5.44 + 2.49 + 2.49, 0.001));
+      },
+    );
 
     test('respeta el súper elegido por el usuario', () {
       final p = buildPlan(prices, items, chosen: 'Metro');
@@ -69,7 +94,10 @@ void main() {
     });
 
     test('enlace de búsqueda en el sitio del súper', () {
-      expect(storeSearchUrl('Maxi', 'boeuf haché').toString(), 'https://www.maxi.ca/fr/search?search-bar=boeuf+hach%C3%A9');
+      expect(
+        storeSearchUrl('Maxi', 'boeuf haché').toString(),
+        'https://www.maxi.ca/fr/search?search-bar=boeuf+hach%C3%A9',
+      );
       expect(storeSearchUrl('Adonis', 'x'), isNull);
     });
   });
@@ -83,10 +111,23 @@ void main() {
       'summary': '',
       'aiUsed': true,
       'ingredients': [
-        {'name': 'choclo', 'qty': 6, 'pantry': false, 'shopFr': 'maïs', 'fr': 'maïs en grains', 'availability': 'hard',
-          'substitute': {'name': 'maíz congelado', 'why': 'parecido', 'shopFr': 'maïs surgelé'}},
+        {
+          'name': 'choclo',
+          'qty': 6,
+          'pantry': false,
+          'shopFr': 'maïs',
+          'fr': 'maïs en grains',
+          'availability': 'hard',
+          'substitute': {
+            'name': 'maíz congelado',
+            'why': 'parecido',
+            'shopFr': 'maïs surgelé',
+          },
+        },
       ],
-      'steps': [{'text': 'Licuar', 'action': 'blend', 'minutes': null}],
+      'steps': [
+        {'text': 'Licuar', 'action': 'blend', 'minutes': null},
+      ],
     });
     expect(r.ingredients.single.substitute!.fr, 'maïs surgelé');
     expect(r.steps.single.action, 'blend');
@@ -94,24 +135,52 @@ void main() {
 
   group('perfil alimenticio', () {
     Recipe vegan() => Recipe.fromJson({
-          'url': 'https://www.recetasnestle.cl/recetas/pastel-de-choclo',
-          'source': 'Recetas Nestlé Chile',
-          'title': 'Pastel de choclo',
-          'summary': '',
-          'aiUsed': true,
-          'diet': ['gluten', 'vegan'],
-          'dietAdapted': true,
-          'dietOk': false,
-          'dietNotes': ['Revisa que el caldo diga sin gluten.'],
-          'ingredients': [
-            {'name': 'carne molida', 'fr': 'bœuf haché', 'shopFr': 'boeuf haché', 'pantry': false, 'availability': 'common',
-              'conflicts': ['vegan'], 'subReason': 'diet',
-              'substitute': {'name': 'lentejas cocidas', 'why': 'textura parecida', 'fr': 'lentilles cuites', 'shopFr': 'lentilles'}},
-            {'name': 'cebolla', 'fr': 'oignon', 'shopFr': 'oignon', 'pantry': false, 'availability': 'common', 'conflicts': []},
-            {'name': 'miel', 'fr': 'miel', 'shopFr': 'miel', 'pantry': false, 'availability': 'common', 'conflicts': ['vegan']},
-          ],
-          'steps': [{'text': 'Cocinar', 'action': 'boil'}],
-        });
+      'url': 'https://www.recetasnestle.cl/recetas/pastel-de-choclo',
+      'source': 'Recetas Nestlé Chile',
+      'title': 'Pastel de choclo',
+      'summary': '',
+      'aiUsed': true,
+      'diet': ['gluten', 'vegan'],
+      'dietAdapted': true,
+      'dietOk': false,
+      'dietNotes': ['Revisa que el caldo diga sin gluten.'],
+      'ingredients': [
+        {
+          'name': 'carne molida',
+          'fr': 'bœuf haché',
+          'shopFr': 'boeuf haché',
+          'pantry': false,
+          'availability': 'common',
+          'conflicts': ['vegan'],
+          'subReason': 'diet',
+          'substitute': {
+            'name': 'lentejas cocidas',
+            'why': 'textura parecida',
+            'fr': 'lentilles cuites',
+            'shopFr': 'lentilles',
+          },
+        },
+        {
+          'name': 'cebolla',
+          'fr': 'oignon',
+          'shopFr': 'oignon',
+          'pantry': false,
+          'availability': 'common',
+          'conflicts': [],
+        },
+        {
+          'name': 'miel',
+          'fr': 'miel',
+          'shopFr': 'miel',
+          'pantry': false,
+          'availability': 'common',
+          'conflicts': ['vegan'],
+        },
+      ],
+      'steps': [
+        {'text': 'Cocinar', 'action': 'boil'},
+      ],
+    });
 
     test('lee régimen, conflictos y consejos', () {
       final r = vegan();
@@ -122,23 +191,43 @@ void main() {
       expect(r.ingredients.first.subReason, 'diet');
     });
 
-    test('el sustituto que cumple el régimen viene activado y entra a la compra', () async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final s = RecipeSession(vegan(), prefs, 'gluten,vegan');
-      expect(s.useSub, {0});
-      expect(s.effective(0).name, 'lentejas cocidas');
-      expect(s.buyItems().first.query, 'lentilles');
-      // sin sustituto (miel): se mantiene el original
-      expect(s.effective(2).sub, isFalse);
-    });
+    test(
+      'el sustituto que cumple el régimen viene activado y entra a la compra',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final s = RecipeSession(vegan(), prefs, 'gluten,vegan');
+        expect(s.useSub, {0});
+        expect(s.effective(0).name, 'lentejas cocidas');
+        expect(s.buyItems().first.query, 'lentilles');
+        // sin sustituto (miel): se mantiene el original
+        expect(s.effective(2).sub, isFalse);
+      },
+    );
 
     test('lo elegido se guarda por régimen', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
-      RecipeSession(vegan(), prefs, 'gluten,vegan').toggleSub(0); // vuelve al original
+      RecipeSession(
+        vegan(),
+        prefs,
+        'gluten,vegan',
+      ).toggleSub(0); // vuelve al original
       expect(RecipeSession(vegan(), prefs, 'gluten,vegan').useSub, isEmpty);
-      expect(RecipeSession(vegan(), prefs, 'vegan').useSub, {0}); // otro régimen: valores por defecto
+      expect(RecipeSession(vegan(), prefs, 'vegan').useSub, {
+        0,
+      }); // otro régimen: valores por defecto
     });
+  });
+
+  test('plato del día: igual que en la web y cambia cada día', () {
+    final a = dailyDish(DateTime(2026, 10, 26, 12));
+    final b = dailyDish(DateTime(2026, 10, 27, 23, 30));
+    expect('${a.country} ${a.dish.q}', 'QC Cretons');
+    expect('${b.country} ${b.dish.q}', 'CL Pebre');
+    expect(
+      dailyDish(DateTime(2026, 10, 26, 0, 5)).dish.q,
+      a.dish.q,
+    ); // todo el día es el mismo
   });
 }

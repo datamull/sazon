@@ -981,12 +981,18 @@
     const introMs = reduce ? 300 : 2600;
     const minIntro = new Promise((ok) => setTimeout(ok, introMs));
     const maxWait = new Promise((ok) => setTimeout(ok, introMs + 6000));
+    let shown = false;
     Promise.all([minIntro, Promise.race([found, maxWait])]).then(() => {
       if (done) return;
+      shown = true;
       showDaily();
     });
+    // si la receta llega tarde (servidor recién despierto), la portada se actualiza sola
+    found.then(() => {
+      if (!done && shown && hit) showDaily(true);
+    });
 
-    function showDaily() {
+    function showDaily(update = false) {
       const label = dish[settings.lang] || dish.q;
       const tr = plain(label) !== plain(dish.q) ? label : "";
       const list = DIETS.filter((d) => settings.diet.includes(d));
@@ -1010,9 +1016,10 @@
           </div>
         </div>`;
       el.querySelector(".sp-skip")?.remove();
+      el.querySelector(".sp-daily")?.remove();
       el.appendChild(card);
       requestAnimationFrame(() => el.classList.add("daily"));
-      card.querySelector(".sd-cook").focus({ preventScroll: true });
+      if (!update) card.querySelector(".sd-cook").focus({ preventScroll: true });
     }
 
     el.addEventListener("click", (ev) => {

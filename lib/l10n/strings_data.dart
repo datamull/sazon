@@ -1,9 +1,13 @@
-// Generado desde la web (public/i18n.js) para que la app y la web digan lo mismo.
-// Para cambiar un texto, cámbialo en la web y vuelve a generar, o edítalo aquí.
+// Generado desde la web (sitio/public/i18n.js) con tool/export_strings.cjs para que la app y la web digan lo mismo.
 
 const Map<String, Map<String, String>> uiStrings = {
   'es': {
     'tagline': 'Recetas de casa, paso a paso',
+    'dishOfDay': 'Plato del día',
+    'cookToday': 'Cocinar hoy',
+    'seeAll': 'Ver todas las recetas',
+    'skip': 'Saltar',
+    'willAdapt': 'Se adapta a tu perfil',
     'hello': 'Hola',
     'sourcesOf': 'Recetas de',
     'profile': 'Mi perfil',
@@ -90,7 +94,7 @@ const Map<String, Map<String, String>> uiStrings = {
         'Por ahora la comparación de precios funciona en Canadá (circulares de Flipp). Puedes seguir con el checklist.',
     'aiOff':
         'Sin IA: la receta se muestra tal como la publica el sitio, sin traducir ni sustitutos.',
-    'aiOffKey': 'Falta configurar la clave de Gemini en Netlify.',
+    'aiOffKey': 'Falta configurar la clave de Gemini en el servidor.',
     'aiOffQuota':
         'Se alcanzó el límite gratuito de Gemini; reintenta en unos minutos.',
     'error': 'Algo falló al conectar.',
@@ -110,6 +114,11 @@ const Map<String, Map<String, String>> uiStrings = {
   },
   'fr': {
     'tagline': 'Recettes maison, étape par étape',
+    'dishOfDay': 'Plat du jour',
+    'cookToday': 'Cuisiner aujourd’hui',
+    'seeAll': 'Voir toutes les recettes',
+    'skip': 'Passer',
+    'willAdapt': 'S’adapte à ton profil',
     'hello': 'Bonjour',
     'sourcesOf': 'Recettes de',
     'profile': 'Mon profil',
@@ -197,7 +206,7 @@ const Map<String, Map<String, String>> uiStrings = {
         'Pour l’instant, la comparaison de prix fonctionne au Canada (circulaires Flipp). Tu peux passer à la liste.',
     'aiOff':
         'Sans IA : la recette s’affiche telle que publiée, sans traduction ni substituts.',
-    'aiOffKey': 'La clé Gemini n’est pas configurée dans Netlify.',
+    'aiOffKey': 'La clé Gemini n’est pas configurée sur le serveur.',
     'aiOffQuota':
         'Limite gratuite de Gemini atteinte; réessaie dans quelques minutes.',
     'error': 'La connexion a échoué.',
@@ -217,6 +226,11 @@ const Map<String, Map<String, String>> uiStrings = {
   },
   'en': {
     'tagline': 'Home recipes, step by step',
+    'dishOfDay': 'Dish of the day',
+    'cookToday': 'Cook today',
+    'seeAll': 'See all recipes',
+    'skip': 'Skip',
+    'willAdapt': 'Adapts to your profile',
     'hello': 'Hi',
     'sourcesOf': 'Recipes from',
     'profile': 'My profile',
@@ -303,7 +317,7 @@ const Map<String, Map<String, String>> uiStrings = {
         'Price comparison currently works in Canada (Flipp flyers). You can continue to the checklist.',
     'aiOff':
         'No AI: the recipe is shown as the site publishes it, without translation or substitutes.',
-    'aiOffKey': 'The Gemini key isn’t set up in Netlify yet.',
+    'aiOffKey': 'The Gemini key isn’t set up on the server yet.',
     'aiOffQuota':
         'Gemini’s free limit was reached; try again in a few minutes.',
     'error': 'Couldn’t connect.',
@@ -328,6 +342,9 @@ class PopularDish {
   final Map<String, String> labels;
   const PopularDish(this.q, this.labels);
 }
+
+/// Orden de los países (también el de la rotación del plato del día).
+const popularCountries = ['QC', 'CL', 'MX', 'CO'];
 
 const Map<String, List<PopularDish>> popularDishes = {
   'QC': [

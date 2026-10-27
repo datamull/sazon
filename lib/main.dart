@@ -4,7 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'state/app_state.dart';
-import 'ui/screens/home_screen.dart';
+import 'ui/screens/splash_screen.dart';
 import 'ui/theme.dart';
 
 Future<void> main() async {
@@ -36,7 +36,7 @@ class SazonApp extends StatelessWidget {
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
           theme: buildTheme(SazonColors.light, Brightness.light),
           darkTheme: buildTheme(SazonColors.dark, Brightness.dark),
-          home: const HomeScreen(),
+          home: const SplashScreen(),
         ),
       ),
     );
