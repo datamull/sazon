@@ -55,6 +55,19 @@ export function stripTags(s: string): string {
   return decodeEntities(String(s || "").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
 }
 
+/** Primera foto que realmente carga (responde 200 con tipo imagen); se prueban como máximo 3. */
+export async function firstWorkingImage(candidates: string[]): Promise<string | undefined> {
+  for (const u of candidates.slice(0, 3)) {
+    try {
+      const r = await fetchWithTimeout(u, 4000, { method: "GET", headers: { range: "bytes=0-0", accept: "image/*" } });
+      const ok = (r.status === 200 || r.status === 206) && /^image\//.test(r.headers.get("content-type") || "");
+      r.body?.cancel().catch(() => {});
+      if (ok) return u;
+    } catch {}
+  }
+  return undefined;
+}
+
 /** Ejecuta tareas con concurrencia limitada. */
 export async function pool<T, R>(items: T[], limit: number, fn: (x: T, i: number) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length);

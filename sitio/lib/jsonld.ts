@@ -155,6 +155,23 @@ export function absoluteImage(img: string | undefined, pageUrl: string): string 
   }
 }
 
+/**
+ * Fotos posibles de una receta, en orden de preferencia: la de la receta (JSON-LD),
+ * la principal de la página (og:image) y la primera foto grande que muestra la página.
+ * Algunos sitios publican direcciones rotas (Télé-Québec), por eso se prueban después.
+ */
+export function imageCandidates(html: string, pageUrl: string, ldImage?: string): string[] {
+  const og = pagePreview(html).image;
+  const shown = [...html.matchAll(/<img[^>]+src=["'](https?:\/\/[^"']+\.(?:jpe?g|webp|png)[^"']*|https?:\/\/res\.cloudinary\.com\/[^"']+)["']/gi)]
+    .map((m) => decodeEntities(m[1]))
+    .filter((u) => !/logo|icon|avatar|sprite|placeholder|pixel/i.test(u))
+    .slice(0, 2);
+  const list = [ldImage, og && !/placeholder/i.test(og) ? og : undefined, ...shown]
+    .map((u) => absoluteImage(u, pageUrl))
+    .filter((u): u is string => !!u);
+  return [...new Set(list)];
+}
+
 /** Título e imagen para las tarjetas de resultados. */
 export function pagePreview(html: string): { title?: string; image?: string } {
   const og = (p: string) =>

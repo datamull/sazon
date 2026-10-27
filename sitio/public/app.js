@@ -902,8 +902,138 @@
     return `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
   }
 
+  // ---------- portada: olla animada + plato del día ----------
+  // El plato del día rota cada día entre los 4 países (mismo plato para todos ese día).
+  function dailyDish() {
+    const now = new Date();
+    const day = Math.floor((now.getTime() - now.getTimezoneOffset() * 60000) / 86400000);
+    const country = COUNTRIES[day % 4];
+    const list = POP[country];
+    return { country, dish: list[Math.floor(day / 4) % list.length] };
+  }
+
+  function splashStage() {
+    const A = window.SAZON_SPLASH;
+    const { w, h } = A.stage;
+    const place = (key, cls, extra = "") => {
+      const p = A.parts[key];
+      const b = p.box;
+      return `<div class="sp-part ${cls}" style="left:${(b.x / w) * 100}%;top:${(b.y / h) * 100}%;width:${(b.w / w) * 100}%;height:${(b.h / h) * 100}%;--r:${p.rot || 0}deg;${extra}">${p.svg}</div>`;
+    };
+    const drops = A.drops.map((k, i) => place(k, "sp-drop", `--d:${0.15 + i * 0.16}s`)).join("");
+    const bubbles = [0, 1, 2]
+      .map((i) => `<span class="sp-bubble" style="left:${40 + i * 10}%;--d:${1.05 + i * 0.18}s"></span>`)
+      .join("");
+    return `<div class="sp-stage" aria-hidden="true">
+        ${place("steam", "sp-steam")}
+        ${drops}
+        ${bubbles}
+        <div class="sp-pot">${place("potBody", "sp-body")}${place("rim", "sp-rim")}</div>
+      </div>`;
+  }
+
+  function startSplash() {
+    if (location.hash || S.view !== "home") return;
+    const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const { country, dish } = dailyDish();
+    const el = document.createElement("div");
+    el.className = "splash" + (reduce ? " still" : "");
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-label", "Sazón");
+    el.innerHTML = `
+      <div class="sp-intro">
+        ${splashStage()}
+        <p class="sp-word">Sazón</p>
+        <p class="sp-tag">${esc(T.tagline)}</p>
+      </div>
+      <button class="sp-skip" data-sp="skip">${esc(T.skip)}</button>`;
+    document.body.appendChild(el);
+    document.documentElement.classList.add("splash-open");
+
+    let hit = null;
+    let done = false;
+    const close = (then) => {
+      if (done) return;
+      done = true;
+      el.classList.add("out");
+      document.documentElement.classList.remove("splash-open");
+      setTimeout(() => el.remove(), 320);
+      if (then) then();
+    };
+
+    // la receta del plato del día se busca mientras corre la animación (adaptada al perfil)
+    const params = new URLSearchParams({ q: dish.q, country, lang: settings.lang, v: "4" });
+    if (dietParam()) params.set("diet", dietParam());
+    const found = api("/api/search?" + params)
+      .then((d) => {
+        hit = (d.results || []).find((r) => r.image) || (d.results || [])[0] || null;
+        if (!hit?.image) return;
+        // espera la foto (máx. 1,5 s) para que la portada aparezca completa
+        return new Promise((ok) => {
+          const img = new Image();
+          img.onload = img.onerror = ok;
+          img.src = hit.image;
+          setTimeout(ok, 1500);
+        });
+      })
+      .catch(() => {});
+
+    const introMs = reduce ? 300 : 2600;
+    const minIntro = new Promise((ok) => setTimeout(ok, introMs));
+    const maxWait = new Promise((ok) => setTimeout(ok, introMs + 6000));
+    Promise.all([minIntro, Promise.race([found, maxWait])]).then(() => {
+      if (done) return;
+      showDaily();
+    });
+
+    function showDaily() {
+      const label = dish[settings.lang] || dish.q;
+      const tr = plain(label) !== plain(dish.q) ? label : "";
+      const list = DIETS.filter((d) => settings.diet.includes(d));
+      const recipeName = hit ? withOrig(hit.title, hit.originalTitle) : "";
+      const card = document.createElement("div");
+      card.className = "sp-daily" + (hit?.image ? "" : " no-photo");
+      card.innerHTML = `
+        ${hit?.image ? `<div class="sd-photo"><img src="${esc(hit.image)}" alt="" referrerpolicy="no-referrer"></div>` : `<div class="sd-art">${ART.serve}</div>`}
+        <div class="sd-shade"></div>
+        <div class="sd-top"><span class="brand-mark">${icon("pot")}</span><span class="sd-brand">Sazón</span></div>
+        <div class="sd-body">
+          <p class="sd-eyebrow">${settings.name ? `${esc(T.hello)}, ${esc(settings.name)} · ` : ""}${esc(T.dishOfDay)}</p>
+          <span class="sd-country">${FLAGS[country]} ${esc(T.countries[country])}</span>
+          <h1 class="sd-title">${esc(dish.q)}</h1>
+          ${tr ? `<p class="sd-tr">(${esc(tr)})</p>` : ""}
+          ${hit ? `<p class="sd-src">${esc(recipeName)} · ${esc(hit.sourceName)}</p>` : ""}
+          ${list.length ? `<p class="sd-diet">${icon("leaf")}<span>${esc(T.willAdapt)}: <b>${esc(dietNames(list))}</b></span></p>` : ""}
+          <div class="sd-actions">
+            <button class="sd-cook" data-sp="cook">${esc(T.cookToday)} ${icon("arrow")}</button>
+            <button class="sd-all" data-sp="all">${esc(T.seeAll)}</button>
+          </div>
+        </div>`;
+      el.querySelector(".sp-skip")?.remove();
+      el.appendChild(card);
+      requestAnimationFrame(() => el.classList.add("daily"));
+      card.querySelector(".sd-cook").focus({ preventScroll: true });
+    }
+
+    el.addEventListener("click", (ev) => {
+      const b = ev.target.closest("[data-sp]");
+      if (!b) {
+        // tocar durante la animación la salta
+        if (!el.classList.contains("daily")) el.classList.add("still");
+        return;
+      }
+      const act = b.dataset.sp;
+      if (act === "skip" || act === "all") return close();
+      if (act === "cook") return close(() => (hit ? openRecipe(hit.url) : search(dish.q, country)));
+    });
+    el.addEventListener("keydown", (ev) => {
+      if (ev.key === "Escape") close();
+    });
+  }
+
   try {
     history.replaceState({ view: "home" }, "");
   } catch {}
   render();
+  startSplash();
 })();

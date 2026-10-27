@@ -1,11 +1,11 @@
 // GET /api/search?q=pastel+de+choclo&country=CL&lang=es&diet=vegan,gluten
 // Busca el plato en las dos fuentes de su país de origen y devuelve como máximo 4 recetas
 // que se pueden abrir (se comprueba que cada página publique la receta completa).
-import { errorJson, fetchWithTimeout, json, pool } from "../http.js";
+import { errorJson, fetchWithTimeout, firstWorkingImage, json, pool } from "../http.js";
 import { COUNTRIES, getIndex, interleave, searchIndex, SOURCES, type Country, type Diet, type Hit } from "../sources.js";
 import { translateList, type Lang } from "../lang.js";
 import { geminiJson, hasGemini } from "../gemini.js";
-import { absoluteImage, extractRecipe, pagePreview } from "../jsonld.js";
+import { extractRecipe, imageCandidates, pagePreview } from "../jsonld.js";
 
 const MAX_RESULTS = 4;
 const DIETS: Diet[] = ["gluten", "lactose", "vegetarian", "vegan"];
@@ -49,10 +49,8 @@ async function firstValid(hits: Hit[], max: number): Promise<Shown[]> {
         const rec = extractRecipe(html);
         if (!rec) return null; // la página no trae ingredientes y pasos: no se podría abrir
         const p = pagePreview(html);
-        const og = p.image && !/placeholder/i.test(p.image) ? p.image : undefined;
         const title = (rec.name || p.title || h.slugTitle).replace(/^(receta|recette|recipe)\s+(de\s+|du\s+|for\s+)?/i, "").trim();
-        // la foto principal de la página (og:image) suele ser la mejor; si no, la de la receta
-        const image = absoluteImage(og || rec.image, h.url);
+        const image = await firstWorkingImage(imageCandidates(html, h.url, rec.image));
         return { ...h, title: title.charAt(0).toUpperCase() + title.slice(1), image };
       } catch {
         return null;

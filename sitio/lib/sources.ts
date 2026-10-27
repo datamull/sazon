@@ -237,9 +237,9 @@ export type Diet = "gluten" | "lactose" | "vegetarian" | "vegan";
 // Palabras de slug que indican que la receta ya cumple el régimen
 const DIET_WORDS: Record<Diet, RegExp> = {
   gluten: /\b(sin gluten|sans gluten|gluten free|gluten)\b/,
-  lactose: /\b(sin lactosa|sans lactose|lactose free|deslactosad[ao])\b/,
-  vegetarian: /\b(vegetarian[ao]?|vegetarien(ne)?|vege|veggie|sin carne)\b/,
-  vegan: /\b(vegan[ao]?|vegetalien(ne)?|vegane?)\b/,
+  lactose: /\b(sin lactosa|sans lactose|lactose free|deslactosad[ao]s?)\b/,
+  vegetarian: /\b(vegetarian[ao]?s?|vegetarien(ne)?s?|vege|veg|veggie|sin carne)\b/,
+  vegan: /\b(vegan[ao]?s?|vegetalien(ne)?s?|vegane?s?|veg)\b/,
 };
 
 /**

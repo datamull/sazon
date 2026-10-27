@@ -2,6 +2,11 @@
 window.SAZON_I18N = {
   es: {
     tagline: "Recetas de casa, paso a paso",
+    dishOfDay: "Plato del día",
+    cookToday: "Cocinar hoy",
+    seeAll: "Ver todas las recetas",
+    skip: "Saltar",
+    willAdapt: "Se adapta a tu perfil",
     hello: "Hola",
     sourcesOf: "Recetas de",
     profile: "Mi perfil",
@@ -99,6 +104,11 @@ window.SAZON_I18N = {
   },
   fr: {
     tagline: "Recettes maison, étape par étape",
+    dishOfDay: "Plat du jour",
+    cookToday: "Cuisiner aujourd’hui",
+    seeAll: "Voir toutes les recettes",
+    skip: "Passer",
+    willAdapt: "S’adapte à ton profil",
     hello: "Bonjour",
     sourcesOf: "Recettes de",
     profile: "Mon profil",
@@ -196,6 +206,11 @@ window.SAZON_I18N = {
   },
   en: {
     tagline: "Home recipes, step by step",
+    dishOfDay: "Dish of the day",
+    cookToday: "Cook today",
+    seeAll: "See all recipes",
+    skip: "Skip",
+    willAdapt: "Adapts to your profile",
     hello: "Hi",
     sourcesOf: "Recipes from",
     profile: "My profile",

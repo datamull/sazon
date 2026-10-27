@@ -2,9 +2,9 @@
 // Descarga la receta desde su sitio original (JSON-LD), y Gemini la traduce,
 // estructura los ingredientes, propone sustitutos según el país y el régimen alimenticio
 // del usuario, y clasifica cada paso.
-import { errorJson, fetchWithTimeout, json } from "../http.js";
+import { errorJson, fetchWithTimeout, firstWorkingImage, json } from "../http.js";
 import { ALLOWED_HOSTS, sourceForUrl, type Diet } from "../sources.js";
-import { absoluteImage, extractRecipe, pagePreview, type RawRecipe } from "../jsonld.js";
+import { extractRecipe, imageCandidates, type RawRecipe } from "../jsonld.js";
 import { geminiJson, hasGemini } from "../gemini.js";
 import { ACTIONS, guessAction } from "../actions.js";
 import { isWrongLang, LANG_NAMES, translateList, type Lang } from "../lang.js";
@@ -177,8 +177,7 @@ export default async (req: Request) => {
   if (!raw) return errorJson("no_recipe", "Esta página no publica una receta estructurada. Prueba otro resultado.", 422);
 
   const src = sourceForUrl(target)!;
-  const og = pagePreview(html).image;
-  const image = absoluteImage(og && !/placeholder/i.test(og) ? og : raw.image, target) || null;
+  const image = (await firstWorkingImage(imageCandidates(html, target, raw.image))) || null;
   const base = { url: target, source: src.name, sourceCountry: src.country, image, author: raw.author || null, diet };
 
   if (!hasGemini()) return json({ ...base, ...fallback(raw), dietOk: diet.length === 0, dietAdapted: false, dietNotes: [], aiUsed: false, aiError: "no_key" }, 200, 600);

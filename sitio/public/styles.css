@@ -340,3 +340,78 @@ h1, h2, h3 { font-family: var(--display); letter-spacing: -0.02em; text-wrap: ba
 .sheet fieldset.profile { display: grid; gap: 6px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .sheet input[name="name"] { height: 46px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--bg); }
 .sheet { max-height: 92vh; overflow-y: auto; }
+
+/* ---------- portada ---------- */
+/* un solo mundo visual (verde de la marca), igual en claro y oscuro */
+.splash { position: fixed; inset: 0; z-index: 100; background: #2f6b3f; color: #f4f6ee; overflow: hidden; transition: opacity 0.3s ease; }
+.splash.out { opacity: 0; pointer-events: none; }
+.splash-open, .splash-open body { overflow: hidden; }
+.sp-intro { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 4px; padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px)); transition: opacity 0.45s ease, transform 0.6s ease; }
+.sp-stage { position: relative; width: min(70vw, 300px); aspect-ratio: 200 / 220; }
+.sp-part { position: absolute; }
+.sp-pot { position: absolute; inset: 0; }
+.sp-part svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.sp-word { margin: -6px 0 0; font: 800 clamp(44px, 13vw, 64px) / 1 "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif; letter-spacing: -0.03em; }
+.sp-tag { margin: 6px 0 0; font: 500 16px/1.3 Figtree, system-ui, sans-serif; color: #e9b949; }
+.sp-skip { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: none; border: 0; color: rgba(244, 246, 238, 0.75); font: 600 15px Figtree, system-ui, sans-serif; padding: 10px 12px; cursor: pointer; }
+.sp-bubble { position: absolute; top: 44%; width: 3.5%; aspect-ratio: 1; border-radius: 50%; background: #f4f6ee; opacity: 0; }
+
+/* animación (se omite con "Reducir movimiento" o al tocar la pantalla) */
+.splash:not(.still) .sp-drop { opacity: 0; animation: sp-drop 0.62s cubic-bezier(0.55, 0, 0.8, 0.4) var(--d) forwards; }
+.splash:not(.still) .sp-pot { transform-origin: 50% 70%; animation: sp-bump 0.75s ease-out 0.55s both; }
+.splash:not(.still) .sp-bubble { animation: sp-bubble 1.2s ease-in var(--d) infinite; }
+.splash:not(.still) .sp-steam .sp { stroke-dasharray: 80; stroke-dashoffset: 80; animation: sp-draw 0.7s ease-out 1.15s forwards, sp-sway 2.4s ease-in-out 1.85s infinite; }
+.splash:not(.still) .sp-steam .sp:nth-child(2) { animation-delay: 1.3s, 2s; }
+.splash:not(.still) .sp-word { opacity: 0; animation: sp-rise 0.55s ease-out 1.35s forwards; }
+.splash:not(.still) .sp-tag { opacity: 0; animation: sp-rise 0.55s ease-out 1.55s forwards; }
+.splash.still .sp-drop { opacity: 0; }
+@keyframes sp-drop {
+  0% { opacity: 1; transform: translateY(-340%) rotate(calc(var(--r) - 40deg)); }
+  78% { opacity: 1; transform: translateY(18%) rotate(var(--r)); }
+  100% { opacity: 0; transform: translateY(70%) rotate(var(--r)); }
+}
+@keyframes sp-bump { 0%, 100% { transform: none; } 15%, 45% { transform: scale(1.05, 0.93); } 30%, 60% { transform: scale(0.98, 1.03); } }
+@keyframes sp-bubble { 0% { opacity: 0; transform: translateY(0) scale(0.6); } 30% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(-260%) scale(1.1); } }
+@keyframes sp-draw { to { stroke-dashoffset: 0; } }
+@keyframes sp-sway { 50% { transform: translateY(-4px); opacity: 0.75; } }
+@keyframes sp-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* plato del día */
+.sp-daily { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease; display: flex; flex-direction: column; justify-content: flex-end; }
+.splash.daily .sp-daily { opacity: 1; }
+.splash.daily .sp-intro { opacity: 0; transform: scale(0.94); pointer-events: none; }
+.sd-photo { position: absolute; inset: 0; }
+.sd-photo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 6s ease-out; }
+.splash.daily .sd-photo img { transform: scale(1); }
+.sd-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 24, 16, 0.55) 0%, rgba(14, 24, 16, 0) 22%, rgba(14, 24, 16, 0.15) 42%, rgba(14, 24, 16, 0.88) 72%, #142016 100%); }
+.no-photo .sd-shade { background: none; }
+.sd-art { position: absolute; left: 50%; top: 14%; width: min(80vw, 380px); transform: translateX(-50%); padding: 18px; border-radius: 26px; background: #f8ecc8; }
+.sd-art .art { width: 100%; display: block; }
+.sd-top { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); left: max(18px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 8px; }
+.sd-top .brand-mark { background: #f4f6ee; color: #2f6b3f; }
+.sd-brand { font: 800 22px/1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -0.02em; }
+.sd-body { position: relative; display: grid; gap: 8px; max-width: 640px; width: 100%; margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.sd-eyebrow { margin: 0; font: 600 12px/1.3 Figtree, system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.1em; color: #e9b949; }
+.sd-country { justify-self: start; padding: 3px 10px; border-radius: 12px; background: rgba(244, 246, 238, 0.16); font: 700 13px Figtree, system-ui, sans-serif; }
+.sd-title { margin: 2px 0 0; font: 800 clamp(40px, 12vw, 64px) / 0.98 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -0.03em; text-wrap: balance; }
+.sd-tr { margin: 0; font: 600 20px/1.2 "Bricolage Grotesque", system-ui, sans-serif; color: rgba(244, 246, 238, 0.78); }
+.sd-src { margin: 2px 0 0; font: 14px/1.4 Figtree, system-ui, sans-serif; color: rgba(244, 246, 238, 0.8); }
+.sd-diet { display: flex; gap: 8px; align-items: flex-start; margin: 2px 0 0; padding: 8px 12px; border-radius: 12px; background: rgba(127, 194, 143, 0.22); font: 14px/1.35 Figtree, system-ui, sans-serif; }
+.sd-diet .ic { color: #a8d5a2; flex: none; }
+.sd-actions { display: grid; gap: 4px; margin-top: 10px; }
+.sd-cook { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; border: 0; border-radius: 14px; background: #e9b949; color: #1f2a1f; font: 800 18px "Bricolage Grotesque", system-ui, sans-serif; cursor: pointer; transition: transform 0.12s; }
+.sd-cook:active { transform: scale(0.98); }
+.sd-all { min-height: 46px; border: 0; background: none; color: #f4f6ee; font: 600 16px Figtree, system-ui, sans-serif; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.splash :focus-visible { outline: 3px solid #e9b949; outline-offset: 3px; }
+.splash.daily .sp-daily .sd-body > * { animation: sp-rise 0.5s ease-out both; }
+.splash.daily .sd-body > :nth-child(2) { animation-delay: 0.05s; }
+.splash.daily .sd-body > :nth-child(3) { animation-delay: 0.1s; }
+.splash.daily .sd-body > :nth-child(4) { animation-delay: 0.15s; }
+.splash.daily .sd-body > :nth-child(n + 5) { animation-delay: 0.2s; }
+@media (min-width: 900px) {
+  .sd-body { padding-bottom: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-daily, .sp-intro, .sd-photo img { transition: none; }
+  .splash.daily .sp-daily .sd-body > * { animation: none; }
+}
